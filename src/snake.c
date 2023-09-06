@@ -121,8 +121,10 @@ void update_snake() {
 
     //remove tail
     // set_bkg_tile_xy(snakeTail.x, snakeTail.y, 0);
-    // snakeTail = *snakeTail.next;
-    // snakeTail.prev = NULL;
+    // snakeTail.x = snakeTail.next->x;
+    // snakeTail.y = snakeTail.next->y;
+    // snakeTail.direction = snakeTail.next->direction;
     // snakeTail.tile = SNAKE_TAIL_UP + snakeTail.direction;
+    // snakeTail.next = snakeTail.next->next;
     // set_bkg_tile_xy(snakeTail.x, snakeTail.y, snakeTail.tile);
 }

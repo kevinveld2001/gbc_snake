@@ -21,7 +21,7 @@ const UWORD backgroundPalette[] = {
 void main() 
 {
     set_bkg_palette(0, 8, &backgroundPalette[0]);
-    set_bkg_data(0, 29, tiles);
+    set_bkg_data(0, 30, tiles);
 
     VBK_REG = 1;
     set_bkg_tiles(0, 0, backgroundWidth, backgroundHeight, backgroundPLN1);
@@ -37,7 +37,7 @@ void main()
     {
         timecounter++;
         get_user_input();
-        if (timecounter < 500) continue;
+        if (timecounter < 1000) continue;
         timecounter = 0;
         wait_vbl_done();
         update_snake();
