@@ -3,6 +3,7 @@
 #include <gb/cgb.h>
 #include "assets/background.h"
 #include "assets/tiles.h"
+#include "snake.h"
 
 const UWORD backgroundPalette[] = {
     tilesCGBPal0c0, tilesCGBPal0c1, tilesCGBPal0c2, tilesCGBPal0c3,
@@ -29,4 +30,19 @@ void main()
 
     SHOW_BKG;
     DISPLAY_ON;
+    init_snake();
+
+    int timecounter = 0;
+    while (1)
+    {
+        timecounter++;
+        get_user_input();
+        if (timecounter < 500) continue;
+        timecounter = 0;
+        wait_vbl_done();
+        update_snake();
+
+    }
+    
+
 }
