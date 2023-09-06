@@ -65,10 +65,10 @@ void init_snake() {
 }
 
 void get_user_input() {
-    if (joypad() & J_UP) direction = DIRECTION_UP;
-    else if (joypad() & J_RIGHT) direction = DIRECTION_RIGHT;
-    else if (joypad() & J_DOWN) direction = DIRECTION_DOWN;
-    else if (joypad() & J_LEFT) direction = DIRECTION_LEFT;
+    if (joypad() & J_UP && direction != DIRECTION_DOWN) direction = DIRECTION_UP;
+    else if (joypad() & J_RIGHT && direction != DIRECTION_LEFT) direction = DIRECTION_RIGHT;
+    else if (joypad() & J_DOWN && direction != DIRECTION_UP) direction = DIRECTION_DOWN;
+    else if (joypad() & J_LEFT && direction != DIRECTION_RIGHT) direction = DIRECTION_LEFT;
 }
 
 void update_snake() {
