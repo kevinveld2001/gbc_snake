@@ -1,5 +1,6 @@
 #include <gb/gb.h>
 #include <stdio.h>
+#include <rand.h>
 #include <gb/cgb.h>
 #include "snake.h"
 
@@ -128,14 +129,34 @@ void update_snake() {
     set_bkg_tile_xy(snake[snakeTail-1].x, snake[snakeTail-1].y, 0);
     set_bkg_tile_xy(snake[snakeTail].x, snake[snakeTail].y, snake[snakeTail].tile);
 }
+void spawn_new_apple() {
+    int randomXApplePos = 0;
+    int randomYApplePos = 0;
+    while (1) {
+        randomXApplePos = rand() % 20;
+        randomYApplePos = rand() % 18;
+        if (get_bkg_tile_xy(randomXApplePos, randomYApplePos) == 0) {
+            VBK_REG = 1;
+            int colorPallet = get_bkg_tile_xy(randomXApplePos, randomYApplePos);
+            VBK_REG = 0;
+            if (colorPallet == 1) break;
+        }
+    }
+    VBK_REG = 1;
+    set_bkg_tile_xy(randomXApplePos, randomYApplePos, 3);
+    VBK_REG = 0;
+    set_bkg_tile_xy(randomXApplePos, randomYApplePos, 1);
+}
 
 BOOLEAN check_apple_collision() {
     int tile = get_bkg_tile_xy(snake[snakeHead].x, snake[snakeHead].y);
     if (tile == 1) {
         //change pallet of apple
         VBK_REG = 1;
-        set_bkg_tile_xy(snake[snakeHead].x, snake[snakeHead].y, 4);
+        set_bkg_tile_xy(snake[snakeHead].x, snake[snakeHead].y, 1);
         VBK_REG = 0;
+
+        spawn_new_apple();
         return TRUE;
     }
     return FALSE;
