@@ -61,10 +61,10 @@ void init_snake() {
 }
 
 void get_user_input() {
-    if (joypad() & J_UP && direction != DIRECTION_DOWN) direction = DIRECTION_UP;
-    else if (joypad() & J_RIGHT && direction != DIRECTION_LEFT) direction = DIRECTION_RIGHT;
-    else if (joypad() & J_DOWN && direction != DIRECTION_UP) direction = DIRECTION_DOWN;
-    else if (joypad() & J_LEFT && direction != DIRECTION_RIGHT) direction = DIRECTION_LEFT;
+    if (joypad() & J_UP && snake[snakeHead].direction != DIRECTION_DOWN) direction = DIRECTION_UP;
+    else if (joypad() & J_RIGHT && snake[snakeHead].direction != DIRECTION_LEFT) direction = DIRECTION_RIGHT;
+    else if (joypad() & J_DOWN && snake[snakeHead].direction != DIRECTION_UP) direction = DIRECTION_DOWN;
+    else if (joypad() & J_LEFT && snake[snakeHead].direction != DIRECTION_RIGHT) direction = DIRECTION_LEFT;
 }
 
 void update_snake() {
@@ -131,7 +131,15 @@ void update_snake() {
                 set_bkg_tile_xy(snake[snakeTail-1].x, snake[snakeTail-1].y, 0);
                 set_bkg_tile_xy(snake[snakeTail].x, snake[snakeTail].y, snake[snakeTail].tile);
                 snakeTail++;
-                delay(100);
+                
+                //shake animation
+                wait_vbl_done();
+                scroll_bkg(1, 0);
+                delay(20);
+                scroll_bkg(-2, 0);
+                delay(20);
+                scroll_bkg(1, 0);
+                delay(20);
             } else {
                 set_bkg_tile_xy(snake[snakeTail-1].x, snake[snakeTail-1].y, 0);
             }
