@@ -28,40 +28,33 @@ struct SnakeBody {
     int y;
     int tile;
     int direction;
-    struct SnakeBody *prev;
-    struct SnakeBody *next;
 };
+struct SnakeBody snake[256];
 
-struct SnakeBody snakeHead;
-struct SnakeBody snakeTail;
+uint8_t snakeHead = 2;
+uint8_t snakeTail = 0;
 
 
 void init_snake() {
-    snakeTail.x = 2;
-    snakeTail.y = 9;
-    snakeTail.tile = SNAKE_TAIL_RIGHT;
-    snakeTail.direction = DIRECTION_RIGHT;
-    snakeTail.prev = NULL;
-    snakeTail.next = NULL;
+    snake[0].x = 2;
+    snake[0].y = 9;
+    snake[0].tile = SNAKE_TAIL_RIGHT;
+    snake[0].direction = DIRECTION_RIGHT;
 
+    snake[1].x = 3;
+    snake[1].y = 9;
+    snake[1].tile = SNAKE_BODY_HORISONTAL;
+    snake[1].direction = DIRECTION_RIGHT;
 
-    struct SnakeBody snakeBody = {3, 9, SNAKE_BODY_HORISONTAL, DIRECTION_RIGHT, &snakeTail, NULL};
-    snakeTail.next = &snakeBody;
+    snake[2].x = 4;
+    snake[2].y = 9;
+    snake[2].tile = SNAKE_HEAD_TILE_RIGHT;
+    snake[2].direction = DIRECTION_RIGHT;
 
-    snakeHead.x = 4;
-    snakeHead.y = 9;
-    snakeHead.tile = SNAKE_HEAD_TILE_RIGHT;
-    snakeHead.direction = DIRECTION_RIGHT;
-    snakeHead.prev = &snakeBody;
-    snakeHead.next = NULL;
-    snakeBody.next = &snakeHead;
-
-    //display snake
-    struct SnakeBody *current = &snakeHead;
-    while (current != NULL) {
-        set_bkg_tile_xy(current->x, current->y, current->tile);
-        current = current->prev;
+    for (int i = 0; i < 3; i++) {
+        set_bkg_tile_xy(snake[i].x, snake[i].y, snake[i].tile);
     }
+
 }
 
 void get_user_input() {
@@ -73,8 +66,8 @@ void get_user_input() {
 
 void update_snake() {
     //add body at head position
-    int newx = snakeHead.x;
-    int newy = snakeHead.y;
+    int newx = snake[snakeHead].x;
+    int newy = snake[snakeHead].y;
     int newSnakeHeadTile = 0;
     if (direction == DIRECTION_UP) {
         newy--;
@@ -90,41 +83,42 @@ void update_snake() {
         newSnakeHeadTile = SNAKE_HEAD_TILE_LEFT;
     }
 
-    struct SnakeBody newHead = {newx, newy, newSnakeHeadTile, direction, &snakeHead, NULL};
-    snakeHead.next = &newHead;
-    if (snakeHead.direction == DIRECTION_UP || snakeHead.direction == DIRECTION_DOWN) {
-        snakeHead.tile = SNAKE_BODY_VERTICAL;
+
+    if (snake[snakeHead].direction == DIRECTION_UP || snake[snakeHead].direction == DIRECTION_DOWN) {
+        snake[snakeHead].tile = SNAKE_BODY_VERTICAL;
     } else {
-        snakeHead.tile = SNAKE_BODY_HORISONTAL;
+        snake[snakeHead].tile = SNAKE_BODY_HORISONTAL;
     }
-    if ((snakeHead.direction == DIRECTION_UP && direction == DIRECTION_RIGHT)
-    || (snakeHead.direction == DIRECTION_LEFT && direction == DIRECTION_DOWN)) {
-        snakeHead.tile = 21;
+    if ((snake[snakeHead].direction == DIRECTION_UP && direction == DIRECTION_RIGHT)
+    || (snake[snakeHead].direction == DIRECTION_LEFT && direction == DIRECTION_DOWN)) {
+        snake[snakeHead].tile = 21;
     }
-    if ((snakeHead.direction == DIRECTION_UP && direction == DIRECTION_LEFT)
-    || (snakeHead.direction == DIRECTION_RIGHT && direction == DIRECTION_DOWN)) {
-        snakeHead.tile = 22;
+    if ((snake[snakeHead].direction == DIRECTION_UP && direction == DIRECTION_LEFT)
+    || (snake[snakeHead].direction == DIRECTION_RIGHT && direction == DIRECTION_DOWN)) {
+        snake[snakeHead].tile = 22;
     }
-    if ((snakeHead.direction == DIRECTION_RIGHT && direction == DIRECTION_UP)
-    || (snakeHead.direction == DIRECTION_DOWN && direction == DIRECTION_LEFT)) {
-        snakeHead.tile = 23;
+    if ((snake[snakeHead].direction == DIRECTION_RIGHT && direction == DIRECTION_UP)
+    || (snake[snakeHead].direction == DIRECTION_DOWN && direction == DIRECTION_LEFT)) {
+        snake[snakeHead].tile = 23;
     }
-    if ((snakeHead.direction == DIRECTION_LEFT && direction == DIRECTION_UP)
-    || (snakeHead.direction == DIRECTION_DOWN && direction == DIRECTION_RIGHT)) {
-        snakeHead.tile = 24;
+    if ((snake[snakeHead].direction == DIRECTION_LEFT && direction == DIRECTION_UP)
+    || (snake[snakeHead].direction == DIRECTION_DOWN && direction == DIRECTION_RIGHT)) {
+        snake[snakeHead].tile = 24;
     }
 
-    set_bkg_tile_xy(snakeHead.x, snakeHead.y, snakeHead.tile);
+    set_bkg_tile_xy(snake[snakeHead].x, snake[snakeHead].y, snake[snakeHead].tile);
     
-    snakeHead = *&newHead;
-    set_bkg_tile_xy(snakeHead.x, snakeHead.y, snakeHead.tile);
+    snakeHead++;
+    snake[snakeHead].x = newx;
+    snake[snakeHead].y = newy;
+    snake[snakeHead].tile = newSnakeHeadTile;
+    snake[snakeHead].direction = direction;
+
+    set_bkg_tile_xy(snake[snakeHead].x, snake[snakeHead].y, snake[snakeHead].tile);
 
     //remove tail
-    // set_bkg_tile_xy(snakeTail.x, snakeTail.y, 0);
-    // snakeTail.x = snakeTail.next->x;
-    // snakeTail.y = snakeTail.next->y;
-    // snakeTail.direction = snakeTail.next->direction;
-    // snakeTail.tile = SNAKE_TAIL_UP + snakeTail.direction;
-    // snakeTail.next = snakeTail.next->next;
-    // set_bkg_tile_xy(snakeTail.x, snakeTail.y, snakeTail.tile);
+    set_bkg_tile_xy(snake[snakeTail].x, snake[snakeTail].y, 0);
+    snakeTail++;
+    snake[snakeTail].tile = SNAKE_TAIL_UP + snake[snakeTail + 1].direction;
+    set_bkg_tile_xy(snake[snakeTail].x, snake[snakeTail].y, snake[snakeTail].tile);
 }
