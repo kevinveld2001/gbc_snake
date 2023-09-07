@@ -22,6 +22,7 @@
 #define SNAKE_HEAD_TILE_LEFT 28
 
 int direction = DIRECTION_RIGHT;
+BOOLEAN check_apple_collision();
 
 struct SnakeBody {
     int x;
@@ -106,7 +107,6 @@ void update_snake() {
         snake[snakeHead].tile = 24;
     }
 
-    set_bkg_tile_xy(snake[snakeHead].x, snake[snakeHead].y, snake[snakeHead].tile);
     
     snakeHead++;
     snake[snakeHead].x = newx;
@@ -114,11 +114,29 @@ void update_snake() {
     snake[snakeHead].tile = newSnakeHeadTile;
     snake[snakeHead].direction = direction;
 
-    set_bkg_tile_xy(snake[snakeHead].x, snake[snakeHead].y, snake[snakeHead].tile);
-
     //remove tail
-    set_bkg_tile_xy(snake[snakeTail].x, snake[snakeTail].y, 0);
-    snakeTail++;
-    snake[snakeTail].tile = SNAKE_TAIL_UP + snake[snakeTail + 1].direction;
+    if (check_apple_collision()) {
+
+    } else {
+        snakeTail++;
+        snake[snakeTail].tile = SNAKE_TAIL_UP + snake[snakeTail + 1].direction;
+    }
+
+    //update snake
+    set_bkg_tile_xy(snake[snakeHead-1].x, snake[snakeHead-1].y, snake[snakeHead-1].tile);
+    set_bkg_tile_xy(snake[snakeHead].x, snake[snakeHead].y, snake[snakeHead].tile);
+    set_bkg_tile_xy(snake[snakeTail-1].x, snake[snakeTail-1].y, 0);
     set_bkg_tile_xy(snake[snakeTail].x, snake[snakeTail].y, snake[snakeTail].tile);
+}
+
+BOOLEAN check_apple_collision() {
+    int tile = get_bkg_tile_xy(snake[snakeHead].x, snake[snakeHead].y);
+    if (tile == 1) {
+        //change pallet of apple
+        VBK_REG = 1;
+        set_bkg_tile_xy(snake[snakeHead].x, snake[snakeHead].y, 4);
+        VBK_REG = 0;
+        return TRUE;
+    }
+    return FALSE;
 }
