@@ -24,6 +24,7 @@
 
 int direction = DIRECTION_RIGHT;
 BOOLEAN check_apple_collision();
+BOOLEAN check_snake_collision();
 
 struct SnakeBody {
     int x;
@@ -117,10 +118,24 @@ void update_snake() {
 
     //remove tail
     if (check_apple_collision()) {
-
+        //TODO add score
     } else {
         snakeTail++;
         snake[snakeTail].tile = SNAKE_TAIL_UP + snake[snakeTail + 1].direction;
+    }
+
+    if (!check_snake_collision()) {
+        while (1) {
+            if (snakeTail != snakeHead) {
+                snake[snakeTail].tile = SNAKE_TAIL_UP + snake[snakeTail + 1].direction;
+                set_bkg_tile_xy(snake[snakeTail-1].x, snake[snakeTail-1].y, 0);
+                set_bkg_tile_xy(snake[snakeTail].x, snake[snakeTail].y, snake[snakeTail].tile);
+                snakeTail++;
+                delay(100);
+            } else {
+                set_bkg_tile_xy(snake[snakeTail-1].x, snake[snakeTail-1].y, 0);
+            }
+        }
     }
 
     //update snake
@@ -155,9 +170,18 @@ BOOLEAN check_apple_collision() {
         VBK_REG = 1;
         set_bkg_tile_xy(snake[snakeHead].x, snake[snakeHead].y, 1);
         VBK_REG = 0;
+        set_bkg_tile_xy(snake[snakeHead].x, snake[snakeHead].y, 0);
 
         spawn_new_apple();
         return TRUE;
     }
     return FALSE;
+}
+
+BOOLEAN check_snake_collision() {
+    int tile = get_bkg_tile_xy(snake[snakeHead].x, snake[snakeHead].y);
+    if (tile != 0 && tile != 29) {
+        return FALSE;
+    }
+    return TRUE;
 }
