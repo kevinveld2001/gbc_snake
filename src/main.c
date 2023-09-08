@@ -4,6 +4,7 @@
 #include "assets/background.h"
 #include "assets/tiles.h"
 #include "snake.h"
+#include "score.h"
 
 const UWORD backgroundPalette[] = {
     tilesCGBPal0c0, tilesCGBPal0c1, tilesCGBPal0c2, tilesCGBPal0c3,
@@ -31,6 +32,7 @@ void main()
     SHOW_BKG;
     DISPLAY_ON;
     init_snake();
+    init_score();
 
     int timecounter = 0;
     while (1)

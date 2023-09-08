@@ -3,6 +3,7 @@
 #include <rand.h>
 #include <gb/cgb.h>
 #include "snake.h"
+#include "score.h"
 
 #define DIRECTION_UP 0
 #define DIRECTION_RIGHT 1
@@ -118,7 +119,7 @@ void update_snake() {
 
     //remove tail
     if (check_apple_collision()) {
-        //TODO add score
+        score_add(1);
     } else {
         snakeTail++;
         snake[snakeTail].tile = SNAKE_TAIL_UP + snake[snakeTail + 1].direction;
